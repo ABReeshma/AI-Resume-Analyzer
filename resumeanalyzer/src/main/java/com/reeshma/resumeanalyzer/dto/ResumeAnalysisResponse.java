@@ -14,4 +14,14 @@ public class ResumeAnalysisResponse {
     private int atsScore;
 
     private int totalSkillWeight;
+
+    private int projectScore;
+
+    private int skillScore;
+
+    private int educationScore;
+
+    private int certificateScore;
+
+    private int formatScore;
 }

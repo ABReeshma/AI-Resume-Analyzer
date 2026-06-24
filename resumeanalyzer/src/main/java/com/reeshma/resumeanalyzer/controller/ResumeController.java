@@ -1,14 +1,12 @@
 package com.reeshma.resumeanalyzer.controller;
 
 import com.reeshma.resumeanalyzer.entity.Resume;
-import com.reeshma.resumeanalyzer.service.ResumeService;
-import com.reeshma.resumeanalyzer.service.SkillExtractionService;
+import com.reeshma.resumeanalyzer.service.*;
 import com.reeshma.resumeanalyzer.utils.PdfParserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.reeshma.resumeanalyzer.dto.ResumeAnalysisResponse;
-import com.reeshma.resumeanalyzer.service.ATSScoreService;
 
 import java.util.List;
 
@@ -24,6 +22,18 @@ public class ResumeController {
 
     @Autowired
     private ATSScoreService atsScoreService;
+
+    @Autowired
+    private ProjectAnalysisService projectAnalysisService;
+
+    @Autowired
+    private EducationAnalysisService educationAnalysisService;
+
+    @Autowired
+    private CertificateAnalysisService certificateAnalysisService;
+
+    @Autowired
+    private ResumeFormatService resumeFormatService;
 
     @PostMapping("/save")
     public Resume saveResume(@RequestBody Resume resume) {
@@ -41,21 +51,54 @@ public class ResumeController {
 
         try {
 
+            // Extract text from PDF
             String resumeText = PdfParserUtil.extractText(file);
 
+            // Detect skills
             List<String> detectedSkills =
                     skillExtractionService.extractSkills(resumeText);
 
+            // Calculate total skill weight
             int totalSkillWeight =
                     atsScoreService.calculateTotalWeight(detectedSkills);
 
-            int atsScore =
-                    atsScoreService.calculateATSScore(totalSkillWeight);
+            // Extract projects section
+            String projectsSection =
+                    projectAnalysisService.extractProjectsSection(resumeText);
 
+            // Calculate project score
+            int projectScore =
+                    projectAnalysisService.calculateProjectScore(projectsSection);
+
+            int skillScore =
+                    atsScoreService.calculateSkillScore(totalSkillWeight);
+
+            int educationScore =
+                    educationAnalysisService.calculateEducationScore(resumeText);
+
+            int certificateScore =
+                    certificateAnalysisService.calculateCertificateScore(resumeText);
+
+            int formatScore =
+                    resumeFormatService.calculateFormatScore(resumeText);
+
+            int atsScore =
+                    atsScoreService.calculateFinalATSScore(
+                            skillScore,
+                            projectScore,
+                            educationScore,
+                            certificateScore,
+                            formatScore
+                    );
             return new ResumeAnalysisResponse(
                     detectedSkills,
                     atsScore,
-                    totalSkillWeight
+                    totalSkillWeight,
+                    projectScore,
+                    skillScore,
+                    educationScore,
+                    certificateScore,
+                    formatScore
             );
 
         } catch (Exception e) {
@@ -63,9 +106,11 @@ public class ResumeController {
             return new ResumeAnalysisResponse(
                     List.of("Error : " + e.getMessage()),
                     0,
-                    0
+                    0,
+                    0,
+                    0,
+                    0,0,0
             );
         }
     }
-
 }

@@ -30,18 +30,33 @@ public class ATSScoreService {
         return totalWeight;
     }
 
-    public int calculateATSScore(int totalWeight) {
+    public int calculateSkillScore(int totalWeight) {
 
-        if (totalWeight >= 90) {
-            return 100;
-        } else if (totalWeight >= 70) {
-            return 85;
-        } else if (totalWeight >= 50) {
-            return 70;
-        } else if (totalWeight >= 30) {
-            return 55;
-        } else {
+        if (totalWeight >= 120) {
+            return 40;
+        } else if (totalWeight >= 100) {
+            return 35;
+        } else if (totalWeight >= 80) {
             return 30;
+        } else if (totalWeight >= 60) {
+            return 25;
+        } else if (totalWeight >= 40) {
+            return 20;
+        } else {
+            return 10;
         }
+    }
+    public int calculateFinalATSScore(
+            int skillScore,
+            int projectScore,
+            int educationScore,
+            int certificateScore,
+            int formatScore) {
+
+        return skillScore
+                + projectScore
+                + educationScore
+                + certificateScore
+                + formatScore;
     }
 }
