@@ -35,6 +35,9 @@ public class ResumeController {
     @Autowired
     private ResumeFormatService resumeFormatService;
 
+    @Autowired
+    private ResumeAnalysisService resumeAnalysisService;
+
     @PostMapping("/save")
     public Resume saveResume(@RequestBody Resume resume) {
         return resumeService.saveResume(resume);
@@ -90,6 +93,15 @@ public class ResumeController {
                             certificateScore,
                             formatScore
                     );
+            resumeAnalysisService.saveAnalysis(
+                    resumeText,
+                    atsScore,
+                    skillScore,
+                    projectScore,
+                    educationScore,
+                    certificateScore,
+                    formatScore
+            );
             return new ResumeAnalysisResponse(
                     detectedSkills,
                     atsScore,
