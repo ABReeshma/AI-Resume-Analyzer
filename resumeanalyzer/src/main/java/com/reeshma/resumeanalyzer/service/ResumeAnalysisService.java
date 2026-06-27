@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ResumeAnalysisService {
@@ -16,6 +17,7 @@ public class ResumeAnalysisService {
     public void saveAnalysis(String resumeText,
                              int atsScore,
                              int skillScore,
+                             List<String> detectedSkills,
                              int projectScore,
                              int educationScore,
                              int certificateScore,
@@ -28,6 +30,9 @@ public class ResumeAnalysisService {
 
         analysis.setAtsScore(atsScore);
         analysis.setSkillScore(skillScore);
+        analysis.setDetectedSkills(
+                String.join(", ", detectedSkills)
+        );
         analysis.setProjectScore(projectScore);
         analysis.setEducationScore(educationScore);
         analysis.setCertificateScore(certificateScore);

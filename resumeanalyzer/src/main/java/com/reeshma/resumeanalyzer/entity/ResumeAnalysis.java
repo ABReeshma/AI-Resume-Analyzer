@@ -19,6 +19,8 @@ public class ResumeAnalysis {
 
     private int atsScore;
 
+    private String detectedSkills;
+
     private int skillScore;
 
     private int projectScore;

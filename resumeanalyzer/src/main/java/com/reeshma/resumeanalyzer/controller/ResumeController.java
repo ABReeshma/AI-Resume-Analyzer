@@ -97,6 +97,7 @@ public class ResumeController {
                     resumeText,
                     atsScore,
                     skillScore,
+                    detectedSkills,
                     projectScore,
                     educationScore,
                     certificateScore,
