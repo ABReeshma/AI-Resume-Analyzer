@@ -24,4 +24,6 @@ public class ResumeAnalysisResponse {
     private int certificateScore;
 
     private int formatScore;
+
+    private String aiSummary;
 }

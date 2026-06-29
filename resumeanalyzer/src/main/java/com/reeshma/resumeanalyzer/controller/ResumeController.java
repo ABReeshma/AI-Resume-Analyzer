@@ -38,6 +38,9 @@ public class ResumeController {
     @Autowired
     private ResumeAnalysisService resumeAnalysisService;
 
+    @Autowired
+    private AIService aiService;
+
     @PostMapping("/save")
     public Resume saveResume(@RequestBody Resume resume) {
         return resumeService.saveResume(resume);
@@ -85,6 +88,7 @@ public class ResumeController {
             int formatScore =
                     resumeFormatService.calculateFormatScore(resumeText);
 
+            String aiSummary = aiService.generateSummary(resumeText);
             int atsScore =
                     atsScoreService.calculateFinalATSScore(
                             skillScore,
@@ -111,7 +115,8 @@ public class ResumeController {
                     skillScore,
                     educationScore,
                     certificateScore,
-                    formatScore
+                    formatScore,
+                    aiSummary
             );
 
         } catch (Exception e) {
@@ -122,7 +127,7 @@ public class ResumeController {
                     0,
                     0,
                     0,
-                    0,0,0
+                    0,0,0,null
             );
         }
     }
