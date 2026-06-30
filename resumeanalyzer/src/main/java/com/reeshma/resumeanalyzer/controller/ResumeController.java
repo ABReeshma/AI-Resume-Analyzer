@@ -89,6 +89,9 @@ public class ResumeController {
                     resumeFormatService.calculateFormatScore(resumeText);
 
             String aiSummary = aiService.generateSummary(resumeText);
+
+            List<String> suggestions =
+                    aiService.generateSuggestions(resumeText);
             int atsScore =
                     atsScoreService.calculateFinalATSScore(
                             skillScore,
@@ -116,7 +119,8 @@ public class ResumeController {
                     educationScore,
                     certificateScore,
                     formatScore,
-                    aiSummary
+                    aiSummary,
+                    suggestions
             );
 
         } catch (Exception e) {
@@ -127,7 +131,7 @@ public class ResumeController {
                     0,
                     0,
                     0,
-                    0,0,0,null
+                    0,0,0,null,null
             );
         }
     }

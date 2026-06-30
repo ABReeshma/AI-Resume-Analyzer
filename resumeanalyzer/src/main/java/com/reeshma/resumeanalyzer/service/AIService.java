@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -23,17 +24,12 @@ public class AIService {
         this.objectMapper = objectMapper;
     }
 
-    public String generateSummary(String resumeText) {
+    // ===========================
+    // Generic Gemini API Method
+    // ===========================
+    private String askGemini(String prompt) {
 
         try {
-
-            String prompt = """
-                    You are an ATS Resume Analyzer.
-
-                    Analyze the following resume and generate a professional summary in 3-4 lines.
-
-                    Resume:
-                    """ + resumeText;
 
             Map<String, Object> requestBody = Map.of(
                     "contents", List.of(
@@ -62,8 +58,63 @@ public class AIService {
                     .asText();
 
         } catch (Exception e) {
-
-            return "Unable to generate AI summary.";
+            return "Unable to connect to Gemini AI.";
         }
     }
+
+    // ===========================
+    // AI Resume Summary
+    // ===========================
+    public String generateSummary(String resumeText) {
+
+        String prompt = """
+                You are a professional ATS Resume Reviewer.
+
+                Analyze the following resume.
+
+                Generate a concise professional summary in exactly 3-4 lines.
+
+                Focus on:
+                - Education
+                - Technical Skills
+                - Projects
+                - Career Objective
+
+                Return only the summary.
+
+                Resume:
+                """ + resumeText;
+
+        return askGemini(prompt);
+    }
+
+    // ===========================
+    // AI Resume Suggestions
+    // ===========================
+    public List<String> generateSuggestions(String resumeText) {
+
+        String prompt = """
+                You are an ATS Resume Expert.
+
+                Analyze the following resume.
+
+                Suggest exactly 5 improvements.
+
+                Rules:
+                - One suggestion per line.
+                - No numbering.
+                - No explanation.
+                - Keep each suggestion short.
+
+                Resume:
+                """ + resumeText;
+
+        String response = askGemini(prompt);
+
+        return Arrays.stream(response.split("\\n"))
+                .map(String::trim)
+                .filter(s -> !s.isBlank())
+                .toList();
+    }
+
 }

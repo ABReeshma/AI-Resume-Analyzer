@@ -26,4 +26,6 @@ public class ResumeAnalysisResponse {
     private int formatScore;
 
     private String aiSummary;
+
+    private List<String> aiSuggestions;
 }
