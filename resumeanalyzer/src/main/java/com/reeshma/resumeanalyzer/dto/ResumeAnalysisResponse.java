@@ -28,4 +28,6 @@ public class ResumeAnalysisResponse {
     private String aiSummary;
 
     private List<String> aiSuggestions;
+
+    private ProjectReviewResponse projectReview;
 }

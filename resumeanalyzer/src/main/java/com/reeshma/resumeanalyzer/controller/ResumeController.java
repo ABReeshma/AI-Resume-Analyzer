@@ -1,5 +1,6 @@
 package com.reeshma.resumeanalyzer.controller;
 
+import com.reeshma.resumeanalyzer.dto.ProjectReviewResponse;
 import com.reeshma.resumeanalyzer.entity.Resume;
 import com.reeshma.resumeanalyzer.service.*;
 import com.reeshma.resumeanalyzer.utils.PdfParserUtil;
@@ -92,6 +93,9 @@ public class ResumeController {
 
             List<String> suggestions =
                     aiService.generateSuggestions(resumeText);
+
+            ProjectReviewResponse projectReview =
+                    aiService.generateProjectReview(projectsSection);
             int atsScore =
                     atsScoreService.calculateFinalATSScore(
                             skillScore,
@@ -120,7 +124,8 @@ public class ResumeController {
                     certificateScore,
                     formatScore,
                     aiSummary,
-                    suggestions
+                    suggestions,
+                    projectReview
             );
 
         } catch (Exception e) {
@@ -131,7 +136,13 @@ public class ResumeController {
                     0,
                     0,
                     0,
-                    0,0,0,null,null
+                    0,0,0,"",
+                    List.of(),
+                    new ProjectReviewResponse(
+                            "N/A",
+                            List.of(),
+                            List.of()
+                    )
             );
         }
     }

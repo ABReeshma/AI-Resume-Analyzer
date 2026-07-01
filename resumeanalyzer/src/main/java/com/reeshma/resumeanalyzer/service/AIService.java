@@ -2,6 +2,7 @@ package com.reeshma.resumeanalyzer.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.reeshma.resumeanalyzer.dto.ProjectReviewResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -115,6 +116,52 @@ public class AIService {
                 .map(String::trim)
                 .filter(s -> !s.isBlank())
                 .toList();
+    }
+    public ProjectReviewResponse generateProjectReview(String projectsSection) {
+
+        String prompt = """
+            You are a Senior Software Engineer.
+
+            Review ONLY the following projects.
+
+            Return ONLY valid JSON.
+
+            {
+              "overallRating": "",
+              "strengths": [],
+              "improvements": []
+            }
+
+            Rules:
+            - overallRating should be between 1/5 and 5/5.
+            - Give exactly 3 strengths.
+            - Give exactly 3 improvements.
+            - Do not return markdown.
+            - Do not return explanation.
+            - Return JSON only.
+
+            Projects:
+            """ + projectsSection;
+
+        try {
+
+            String jsonResponse = askGemini(prompt);
+
+            return objectMapper.readValue(
+                    jsonResponse,
+                    ProjectReviewResponse.class
+            );
+
+        } catch (Exception e) {
+
+            return new ProjectReviewResponse(
+                    "N/A",
+                    List.of("Unable to analyze projects."),
+                    List.of("Try again.")
+            );
+
+        }
+
     }
 
 }
