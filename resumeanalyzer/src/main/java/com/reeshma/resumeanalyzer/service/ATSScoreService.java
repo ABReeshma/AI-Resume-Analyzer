@@ -46,17 +46,26 @@ public class ATSScoreService {
             return 10;
         }
     }
-    public int calculateFinalATSScore(
-            int skillScore,
-            int projectScore,
-            int educationScore,
-            int certificateScore,
-            int formatScore) {
+    public int calculateFinalATSScore(int skillScore,
+                                      int projectScore,
+                                      int educationScore,
+                                      int certificateScore,
+                                      int formatScore,
+                                      int aiAdjustment) {
 
-        return skillScore
+        int score = skillScore
                 + projectScore
                 + educationScore
                 + certificateScore
-                + formatScore;
+                + formatScore
+                + aiAdjustment;
+
+        if (score > 100)
+            score = 100;
+
+        if (score < 0)
+            score = 0;
+
+        return score;
     }
 }

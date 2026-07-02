@@ -36,11 +36,17 @@ public class ResumeController {
     @Autowired
     private ResumeFormatService resumeFormatService;
 
+    private final AIAdjustmentService aiAdjustmentService;
+
     @Autowired
     private ResumeAnalysisService resumeAnalysisService;
 
     @Autowired
     private AIService aiService;
+
+    public ResumeController(AIAdjustmentService aiAdjustmentService) {
+        this.aiAdjustmentService = aiAdjustmentService;
+    }
 
     @PostMapping("/save")
     public Resume saveResume(@RequestBody Resume resume) {
@@ -96,13 +102,22 @@ public class ResumeController {
 
             ProjectReviewResponse projectReview =
                     aiService.generateProjectReview(projectsSection);
+
+            int aiAdjustment =
+                    aiAdjustmentService.calculateAIAdjustment(
+                            aiSummary,
+                            projectReview,
+                            certificateScore
+                    );
+
             int atsScore =
                     atsScoreService.calculateFinalATSScore(
                             skillScore,
                             projectScore,
                             educationScore,
                             certificateScore,
-                            formatScore
+                            formatScore,
+                            aiAdjustment
                     );
             resumeAnalysisService.saveAnalysis(
                     resumeText,
@@ -125,7 +140,8 @@ public class ResumeController {
                     formatScore,
                     aiSummary,
                     suggestions,
-                    projectReview
+                    projectReview,
+                    aiAdjustment
             );
 
         } catch (Exception e) {
@@ -142,7 +158,7 @@ public class ResumeController {
                             "N/A",
                             List.of(),
                             List.of()
-                    )
+                    ),0
             );
         }
     }

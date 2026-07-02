@@ -30,4 +30,6 @@ public class ResumeAnalysisResponse {
     private List<String> aiSuggestions;
 
     private ProjectReviewResponse projectReview;
+
+    private int aiAdjustment;
 }
