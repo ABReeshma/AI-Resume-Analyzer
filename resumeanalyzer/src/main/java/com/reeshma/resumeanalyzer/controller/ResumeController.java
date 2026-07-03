@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.reeshma.resumeanalyzer.dto.ResumeAnalysisResponse;
+import com.reeshma.resumeanalyzer.dto.CareerRecommendationResponse;
 
 import java.util.List;
 
@@ -119,6 +120,9 @@ public class ResumeController {
                             formatScore,
                             aiAdjustment
                     );
+
+            CareerRecommendationResponse careerRecommendation =
+                    aiService.generateCareerRecommendation(resumeText);
             resumeAnalysisService.saveAnalysis(
                     resumeText,
                     atsScore,
@@ -138,28 +142,39 @@ public class ResumeController {
                     educationScore,
                     certificateScore,
                     formatScore,
+                    aiAdjustment,
                     aiSummary,
                     suggestions,
                     projectReview,
-                    aiAdjustment
+                    careerRecommendation
+
             );
 
         } catch (Exception e) {
 
             return new ResumeAnalysisResponse(
-                    List.of("Error : " + e.getMessage()),
+                    List.of("Error: " + e.getMessage()),
                     0,
                     0,
                     0,
                     0,
-                    0,0,0,"",
+                    0,
+                    0,
+                    0,
+                    0, // aiAdjustment
+                    "",
                     List.of(),
                     new ProjectReviewResponse(
                             "N/A",
                             List.of(),
                             List.of()
-                    ),0
+                    ),
+                    new CareerRecommendationResponse(
+                            List.of(),
+                            ""
+                    )
             );
+
         }
     }
 }

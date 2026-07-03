@@ -2,6 +2,7 @@ package com.reeshma.resumeanalyzer.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.reeshma.resumeanalyzer.dto.CareerRecommendationResponse;
 import com.reeshma.resumeanalyzer.dto.ProjectReviewResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -162,6 +163,50 @@ public class AIService {
 
         }
 
+    }
+    public CareerRecommendationResponse generateCareerRecommendation(String resumeText) {
+
+        String prompt = """
+            You are an experienced Technical Recruiter.
+
+            Analyze the following resume.
+
+            Recommend exactly 3 suitable job roles.
+
+            Return ONLY valid JSON.
+
+            {
+              "recommendedRoles": [],
+              "reason": ""
+            }
+
+            Rules:
+            - Recommend exactly 3 roles.
+            - Reason should be under 40 words.
+            - No markdown.
+            - No explanation.
+            - Return JSON only.
+
+            Resume:
+            """ + resumeText;
+
+        try {
+
+            String jsonResponse = askGemini(prompt);
+
+            return objectMapper.readValue(
+                    jsonResponse,
+                    CareerRecommendationResponse.class
+            );
+
+        } catch (Exception e) {
+
+            return new CareerRecommendationResponse(
+                    List.of("Unable to recommend roles"),
+                    "AI recommendation unavailable."
+            );
+
+        }
     }
 
 }

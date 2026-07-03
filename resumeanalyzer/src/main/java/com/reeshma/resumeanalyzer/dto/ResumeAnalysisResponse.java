@@ -25,11 +25,13 @@ public class ResumeAnalysisResponse {
 
     private int formatScore;
 
+    private int aiAdjustment;
+
     private String aiSummary;
 
     private List<String> aiSuggestions;
 
     private ProjectReviewResponse projectReview;
 
-    private int aiAdjustment;
+    private CareerRecommendationResponse careerRecommendation;
 }
