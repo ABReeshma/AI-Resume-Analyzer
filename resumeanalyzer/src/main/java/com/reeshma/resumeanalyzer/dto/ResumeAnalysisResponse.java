@@ -25,7 +25,7 @@ public class ResumeAnalysisResponse {
 
     private int formatScore;
 
-    private int aiAdjustment;
+    private AIAdjustmentResponse aiAdjustment;
 
     private String aiSummary;
 

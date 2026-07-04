@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.reeshma.resumeanalyzer.dto.ResumeAnalysisResponse;
 import com.reeshma.resumeanalyzer.dto.CareerRecommendationResponse;
+import com.reeshma.resumeanalyzer.dto.AIAdjustmentResponse;
 
 import java.util.List;
 
@@ -104,7 +105,7 @@ public class ResumeController {
             ProjectReviewResponse projectReview =
                     aiService.generateProjectReview(projectsSection);
 
-            int aiAdjustment =
+            AIAdjustmentResponse aiAdjustment =
                     aiAdjustmentService.calculateAIAdjustment(
                             aiSummary,
                             projectReview,
@@ -118,7 +119,7 @@ public class ResumeController {
                             educationScore,
                             certificateScore,
                             formatScore,
-                            aiAdjustment
+                            aiAdjustment.getAdjustment()
                     );
 
             CareerRecommendationResponse careerRecommendation =
@@ -161,7 +162,10 @@ public class ResumeController {
                     0,
                     0,
                     0,
-                    0, // aiAdjustment
+                    new AIAdjustmentResponse(
+                            0,
+                            List.of()
+                    ), // aiAdjustment
                     "",
                     List.of(),
                     new ProjectReviewResponse(

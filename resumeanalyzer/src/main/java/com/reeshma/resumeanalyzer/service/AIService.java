@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reeshma.resumeanalyzer.dto.CareerRecommendationResponse;
 import com.reeshma.resumeanalyzer.dto.ProjectReviewResponse;
+import com.reeshma.resumeanalyzer.dto.SuggestionsResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -51,13 +52,19 @@ public class AIService {
 
             JsonNode root = objectMapper.readTree(response);
 
-            return root.path("candidates")
+            String text = root.path("candidates")
                     .get(0)
                     .path("content")
                     .path("parts")
                     .get(0)
                     .path("text")
                     .asText();
+
+            text = text.replace("```json", "")
+                    .replace("```", "")
+                    .trim();
+
+            return text;
 
         } catch (Exception e) {
             return "Unable to connect to Gemini AI.";
@@ -70,22 +77,20 @@ public class AIService {
     public String generateSummary(String resumeText) {
 
         String prompt = """
-                You are a professional ATS Resume Reviewer.
+You are an ATS Resume Expert.
 
-                Analyze the following resume.
+Generate a professional resume summary.
 
-                Generate a concise professional summary in exactly 3-4 lines.
+Rules:
+- Maximum 60 words.
+- Mention education, technical skills and projects.
+- ATS-friendly.
+- Professional tone.
+- No markdown.
+- Return only the summary.
 
-                Focus on:
-                - Education
-                - Technical Skills
-                - Projects
-                - Career Objective
-
-                Return only the summary.
-
-                Resume:
-                """ + resumeText;
+Resume:
+""" + resumeText;
 
         return askGemini(prompt);
     }
@@ -96,53 +101,79 @@ public class AIService {
     public List<String> generateSuggestions(String resumeText) {
 
         String prompt = """
-                You are an ATS Resume Expert.
+            You are an ATS Resume Expert.
 
-                Analyze the following resume.
-
-                Suggest exactly 5 improvements.
-
-                Rules:
-                - One suggestion per line.
-                - No numbering.
-                - No explanation.
-                - Keep each suggestion short.
-
-                Resume:
-                """ + resumeText;
-
-        String response = askGemini(prompt);
-
-        return Arrays.stream(response.split("\\n"))
-                .map(String::trim)
-                .filter(s -> !s.isBlank())
-                .toList();
-    }
-    public ProjectReviewResponse generateProjectReview(String projectsSection) {
-
-        String prompt = """
-            You are a Senior Software Engineer.
-
-            Review ONLY the following projects.
+            Analyze the resume.
 
             Return ONLY valid JSON.
 
             {
-              "overallRating": "",
-              "strengths": [],
-              "improvements": []
+              "suggestions":[]
             }
 
             Rules:
-            - overallRating should be between 1/5 and 5/5.
-            - Give exactly 3 strengths.
-            - Give exactly 3 improvements.
-            - Do not return markdown.
-            - Do not return explanation.
+            - Exactly 5 suggestions.
+            - Each suggestion under 12 words.
+            - Start each suggestion with an action verb.
+            - ATS-friendly.
+            - No numbering.
+            - No explanation.
+            - No markdown.
             - Return JSON only.
 
-            Projects:
-            """ + projectsSection;
+            Resume:
+            """ + resumeText;
+
+        try {
+
+            String jsonResponse = askGemini(prompt);
+
+            SuggestionsResponse response =
+                    objectMapper.readValue(
+                            jsonResponse,
+                            SuggestionsResponse.class
+                    );
+
+            return response.getSuggestions();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            return List.of(
+                    "Unable to generate AI suggestions."
+            );
+
+        }
+    }
+    public ProjectReviewResponse generateProjectReview(String projectsSection) {
+
+        String prompt = """
+You are a Senior Software Engineer.
+
+Review ONLY the projects from this resume.
+
+Return ONLY valid JSON.
+
+{
+  "overallRating":"",
+  "projectComplexity":"",
+  "strengths":[],
+  "improvements":[]
+}
+
+Rules:
+- overallRating between 1/5 and 5/5.
+- projectComplexity must be Basic, Intermediate or Advanced.
+- Exactly 3 strengths.
+- Exactly 3 improvements.
+- Each point under 15 words.
+- ATS-friendly.
+- No markdown.
+- Return JSON only.
+
+Projects:
+""" + projectsSection;
 
         try {
 
@@ -167,28 +198,30 @@ public class AIService {
     public CareerRecommendationResponse generateCareerRecommendation(String resumeText) {
 
         String prompt = """
-            You are an experienced Technical Recruiter.
+You are a Technical Recruiter.
 
-            Analyze the following resume.
+Analyze the resume.
 
-            Recommend exactly 3 suitable job roles.
+Recommend exactly 3 software engineering roles.
 
-            Return ONLY valid JSON.
+Return ONLY valid JSON.
 
-            {
-              "recommendedRoles": [],
-              "reason": ""
-            }
+{
+  "recommendedRoles":[],
+  "reason":""
+}
 
-            Rules:
-            - Recommend exactly 3 roles.
-            - Reason should be under 40 words.
-            - No markdown.
-            - No explanation.
-            - Return JSON only.
+Rules:
+- Recommend only software engineering roles.
+- Do not use Junior, Fresher or Entry-Level.
+- Exactly 3 roles.
+- Reason under 25 words.
+- ATS-friendly.
+- No markdown.
+- Return JSON only.
 
-            Resume:
-            """ + resumeText;
+Resume:
+""" + resumeText;
 
         try {
 
