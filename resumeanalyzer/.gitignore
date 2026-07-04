@@ -14,11 +14,23 @@ target/
 .sts4-cache
 
 ### IntelliJ IDEA ###
+# IDE
 .idea/
-.idea/*
-*.iws
-*.iml
-*.ipr
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+resume-analyzer-frontend/node_modules/
+resume-analyzer-frontend/dist/
+
+# Spring Boot
+resumeanalyzer/target/
+
+# Logs
+*.log
 
 ### NetBeans ###
 /nbproject/private/
