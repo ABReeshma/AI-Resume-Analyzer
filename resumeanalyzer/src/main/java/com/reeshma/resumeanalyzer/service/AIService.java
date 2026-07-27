@@ -67,6 +67,9 @@ public class AIService {
             return text;
 
         } catch (Exception e) {
+
+            e.printStackTrace();
+
             return "Unable to connect to Gemini AI.";
         }
     }
