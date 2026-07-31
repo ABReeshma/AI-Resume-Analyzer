@@ -1,7 +1,6 @@
 package com.reeshma.resumeanalyzer.controller;
 
 import com.reeshma.resumeanalyzer.dto.ProjectReviewResponse;
-import com.reeshma.resumeanalyzer.entity.Resume;
 import com.reeshma.resumeanalyzer.service.*;
 import com.reeshma.resumeanalyzer.utils.PdfParserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/resume")
 public class ResumeController {
-
-    @Autowired
-    private ResumeService resumeService;
 
     @Autowired
     private SkillExtractionService skillExtractionService;
@@ -48,16 +44,6 @@ public class ResumeController {
 
     public ResumeController(AIAdjustmentService aiAdjustmentService) {
         this.aiAdjustmentService = aiAdjustmentService;
-    }
-
-    @PostMapping("/save")
-    public Resume saveResume(@RequestBody Resume resume) {
-        return resumeService.saveResume(resume);
-    }
-
-    @GetMapping("/all")
-    public List<Resume> getAllResume(){
-        return resumeService.getAllResume();
     }
 
     @PostMapping("/upload")

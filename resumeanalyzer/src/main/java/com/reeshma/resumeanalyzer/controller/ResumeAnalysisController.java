@@ -17,6 +17,6 @@ public class ResumeAnalysisController {
     @GetMapping("/analysis/history")
     public List<ResumeAnalysis> getHistory() {
 
-        return repository.findAll();
+        return repository.findAllByOrderByAnalysisDateDesc();
     }
 }
