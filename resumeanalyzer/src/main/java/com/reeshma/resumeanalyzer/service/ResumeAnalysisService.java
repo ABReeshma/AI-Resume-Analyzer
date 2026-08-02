@@ -72,6 +72,6 @@ public class ResumeAnalysisService {
             return matcher.group();
         }
 
-        return "Not Found";
+        return "Email Not Available";
     }
 }
