@@ -61,7 +61,7 @@ The application extracts resume content, calculates an ATS score, identifies tec
 
 > Add your Dashboard screenshot here
 
-<img src="screenshots/dashboard.png" width="100%" />
+<img src="dashboard.png" width="100%" />
 
 ---
 
@@ -69,7 +69,7 @@ The application extracts resume content, calculates an ATS score, identifies tec
 
 > Add your History page screenshot here
 
-<img src="screenshots/history.png" width="100%" />
+<img src="history.png" width="100%" />
 
 ---
 
