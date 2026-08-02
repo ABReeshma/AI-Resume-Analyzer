@@ -109,7 +109,7 @@ AI-Resume-Analyzer
 ### Clone Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/AI-Resume-Analyzer.git
+git clone https://github.com/ABReeshma/AI-Resume-Analyzer.git
 ```
 
 ### Backend
