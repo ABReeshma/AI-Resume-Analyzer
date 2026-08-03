@@ -11,8 +11,8 @@
 	<groupId>com.reeshma</groupId>
 	<artifactId>resumeanalyzer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
-	<description/>
+	<name>AI Resume Analyzer</name>
+	<description>AI-powered Resume Analyzer built with Spring Boot, React, MySQL and Gemini AI</description>
 	<url/>
 	<licenses>
 		<license/>
