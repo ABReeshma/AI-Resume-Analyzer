@@ -41,3 +41,6 @@ resumeanalyzer/target/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
+resume_analyzer_backup.sql
+.env
+resume_analyzer_backup_utf8.sql
